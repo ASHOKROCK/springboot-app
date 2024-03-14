@@ -9,12 +9,32 @@ trigger:
 pool:
   name: myagentpool
   vmImage: ubuntu-latest
+  
+  
+stages:
+  - stage: MavenBuild
+    displayName: Build Maven Image
+    jobs:
+      - job: Buildimageanddockerpush
+        displayName: ImageBuild
+        pool:
+           name:  myagentpool
+           vmImage: ubuntu-latest
+        steps:
+        - task: Maven@4
+          inputs:
+            mavenPomFile: 'pom.xml'
+            goals: 'install'
+            publishJUnitResults: true
+            testResultsFiles: '**/surefire-reports/TEST-*.xml'
+            javaHomeOption: 'JDKVersion'
+            mavenVersionOption: 'Default'
+            mavenAuthenticateFeed: false
+            effectivePomSkip: false
+            sonarQubeRunAnalysis: false
+        
+        
+            
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+
